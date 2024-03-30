@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction import FeatureHasher
 from sklearn.preprocessing import StandardScaler
-
 from Autoencoder import Autoencoder
 
 class DataPreprocessor:
@@ -73,16 +72,11 @@ class DataPreprocessor:
         self.avg_time_delta_scaler = self._load_with_pickle(os.path.join('model', 'scalers', 'avg_time_delta_scaler.pkl'))
         self.frames_total_scaler = self._load_with_pickle(os.path.join('model', 'scalers', 'frames_total_scaler.pkl'))
     
-
     def preprocess_train_data(self, df_input):
         # fill nans
         df_input = self._fill_nans(df_input)
         # handle the source ip address
         source_transformed = pd.DataFrame()
-        # for row in df_input.iterrows():
-        #     if len(row[1].source) > len("192.168.1.114"):
-        #         print("Source: " + row[1].source)
-        #         print("Destination: " + row[1].destination)
         source_transformed['transformed_source'] = df_input['source'].apply(lambda ip: self._transform_ip_address(ip))
         source_transformed = source_transformed['transformed_source'].apply(pd.Series)
         source_transformed.columns = ["source_octet_1", "source_octet_2", "source_octet_3", "source_octet_4"]
@@ -146,18 +140,3 @@ class DataPreprocessor:
             source_port_transformed,destination_port_port_transformed, bytes_avg_transformed,
             bytes_total_transformed, avg_time_delta_transformed, frames_total_transformed], axis=1)
         return df_combined
-
-
-
-
-
-# preprocessor = DataPreprocessor()
-# df = pd.read_csv("baseline_traffic.csv")
-# print(df.head())
-# df = preprocessor.preprocess_train_data(df)
-# print(df.head())
-# model = Autoencoder()
-# model.compile(optimizer="adam", loss="mae")
-# history = model.fit(df, df, epochs=70, batch_size=24)
-# model.summary()
-# model.save(os.path.join('model', "model.keras"))

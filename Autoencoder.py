@@ -18,8 +18,3 @@ class Autoencoder(Model):
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)
         return decoded
-
-
-# autoencoder = Autoencoder()
-# autoencoder.compile(optimizer="adam", loss="mae")
-# history = autoencoder.fit()
